@@ -1,7 +1,24 @@
-<script>
+<script lang="ts">
+  import { Separator } from '$lib/components/ui/separator';
+  import '../app.css';
+  import TopBarMenu from "../components/TopBarMenu.svelte"
+  import { menuItems } from '../config/app.menu';
+   import { ModeWatcher } from "mode-watcher";
   let { children } = $props();
-  import "../app.css";
+
 </script>
-<div class="bg-gray-100 text-gray-900 min-h-screen antialiased">
-{@render children()}
+<ModeWatcher />
+<div class="bg-background h-screen subpixel-antialiased  flex flex-col">
+  <TopBarMenu menu={menuItems} />
+  <main class="flex-1 grid overflow-hidden h-fit border" data-tauri-drag-region>
+    {@render children()}
+  </main>
+  <Separator />
 </div>
+
+<style>
+  
+  [data-tauri-drag-region] {
+    user-select: none;
+  }
+</style>
