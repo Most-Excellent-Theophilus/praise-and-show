@@ -16,7 +16,7 @@
  import{Separator } from "$lib/components/ui/separator";
 
   function isSubmenu(item: MenuItem): item is Extract<MenuItem, { submenu: MenuItem[] }> {
-    return "submenu" in item;
+    return "submenu" in item || !!item.submenu;
   }
 
   let { items }: { items: MenuItem[] } = $props();

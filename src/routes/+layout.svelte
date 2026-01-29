@@ -13,7 +13,7 @@
   <main class="flex-1 grid overflow-hidden h-fit border" data-tauri-drag-region>
     {@render children()}
   </main>
-  <Separator />
+  <!-- <Separator /> -->
 </div>
 
 <style>
