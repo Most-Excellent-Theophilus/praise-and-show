@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Separator } from '$lib/components/ui/separator';
+
   import '../app.css';
   import TopBarMenu from "../components/TopBarMenu.svelte"
   import { menuItems } from '../config/app.menu';
