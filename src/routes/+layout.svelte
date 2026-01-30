@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Info } from '@lucide/svelte';
+
 
   import '../app.css';
   import TopBarMenu from "../components/TopBarMenu.svelte"
@@ -10,10 +12,13 @@
 <ModeWatcher />
 <div class="bg-background h-screen subpixel-antialiased  flex flex-col">
   <TopBarMenu menu={menuItems} />
-  <main class="flex-1 grid overflow-hidden h-fit border" data-tauri-drag-region>
+  <main class="flex-1 overflow-hidden h-fit flex" data-tauri-drag-region>
     {@render children()}
   </main>
-  <!-- <Separator /> -->
+  <div class=" pt-0.5 text-xs border flex justify-between">
+ 
+</div>
+
 </div>
 
 <style>
