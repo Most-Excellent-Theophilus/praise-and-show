@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
-	import RiArrowLeftSLine from 'remixicon-svelte/icons/arrow-left-s-line';
+	import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeft';
 	import { buttonVariants, type ButtonVariant } from "$lib/components/ui/button/index.js";
 	import { cn } from "$lib/utils.js";
 
@@ -16,7 +16,7 @@
 </script>
 
 {#snippet Fallback()}
-	<RiArrowLeftSLine class={cn("size-4", className)} />
+	<CaretLeftIcon class={cn("size-4", className)} />
 {/snippet}
 
 <RangeCalendarPrimitive.PrevButton

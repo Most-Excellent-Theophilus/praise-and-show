@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cn, type WithElementRef } from "$lib/utils.js";
 	import type { HTMLLiAttributes } from "svelte/elements";
-	import RiArrowRightSLine from 'remixicon-svelte/icons/arrow-right-s-line';
+	import CaretRightIcon from 'phosphor-svelte/lib/CaretRight';
 
 	let {
 		ref = $bindable(null),
@@ -22,6 +22,6 @@
 	{#if children}
 		{@render children?.()}
 	{:else}
-		<RiArrowRightSLine  />
+		<CaretRightIcon  />
 	{/if}
 </li>

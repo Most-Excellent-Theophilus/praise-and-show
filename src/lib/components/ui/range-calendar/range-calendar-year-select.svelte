@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { RangeCalendar as RangeCalendarPrimitive } from "bits-ui";
 	import { cn, type WithoutChildrenOrChild } from "$lib/utils.js";
-	import RiArrowDownSLine from 'remixicon-svelte/icons/arrow-down-s-line';
+	import CaretDownIcon from 'phosphor-svelte/lib/CaretDown';
 
 	let {
 		ref = $bindable(null),
@@ -36,7 +36,7 @@
 				aria-hidden="true"
 			>
 				{yearItems.find((item) => item.value === value)?.label || selectedYearItem.label}
-				<RiArrowDownSLine class={cn("size-4", className)} />
+				<CaretDownIcon class={cn("size-4", className)} />
 			</span>
 		{/snippet}
 	</RangeCalendarPrimitive.YearSelect>

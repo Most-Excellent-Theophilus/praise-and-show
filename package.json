@@ -6,8 +6,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
-    "td": "tauri dev",
-		
+		"td": "tauri dev",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -18,8 +17,13 @@
 	"devDependencies": {
 		"@eslint/compat": "^2.1.0",
 		"@eslint/js": "^10.0.1",
+		"@fontsource-variable/figtree": "^5.2.10",
+		"@fontsource-variable/geist-mono": "^5.2.8",
+		"@fontsource-variable/nunito-sans": "^5.2.7",
+		"@fontsource-variable/public-sans": "^5.2.7",
 		"@fontsource-variable/roboto": "^5.2.10",
 		"@internationalized/date": "^3.12.2",
+		"@lucide/svelte": "^1.17.0",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.57.0",
 		"@sveltejs/vite-plugin-svelte": "^7.0.0",
@@ -41,6 +45,7 @@
 		"layerchart": "2.0.0-next.48",
 		"mode-watcher": "^1.1.0",
 		"paneforge": "^1.0.2",
+		"phosphor-svelte": "^3.1.0",
 		"prettier": "^3.8.1",
 		"prettier-plugin-svelte": "^3.5.1",
 		"prettier-plugin-tailwindcss": "^0.7.2",
@@ -58,5 +63,9 @@
 		"typescript-eslint": "^8.58.1",
 		"vaul-svelte": "1.0.0-next.7",
 		"vite": "^8.0.7"
+	},
+	"dependencies": {
+		"@tauri-apps/plugin-dialog": "^2.7.1",
+		"lucide-svelte": "^1.0.1"
 	}
 }

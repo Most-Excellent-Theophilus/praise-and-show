@@ -2,7 +2,7 @@
 	import { Pagination as PaginationPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 	import { buttonVariants } from "$lib/components/ui/button/index.js";
-	import RiArrowRightSLine from 'remixicon-svelte/icons/arrow-right-s-line';
+	import CaretRightIcon from 'phosphor-svelte/lib/CaretRight';
 
 	let {
 		ref = $bindable(null),
@@ -22,5 +22,5 @@
 	{...restProps}
 >
 	<span class="cn-pagination-next-text hidden sm:block">Next</span>
-	<RiArrowRightSLine data-icon="inline-end" />
+	<CaretRightIcon data-icon="inline-end" />
 </PaginationPrimitive.NextButton>

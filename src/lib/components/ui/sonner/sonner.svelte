@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { Toaster as Sonner, type ToasterProps as SonnerProps } from "svelte-sonner";
 	import { mode } from "mode-watcher";
-	import RiLoaderLine from 'remixicon-svelte/icons/loader-line';
-	import RiCheckboxCircleLine from 'remixicon-svelte/icons/checkbox-circle-line';
-	import RiErrorWarningLine from 'remixicon-svelte/icons/error-warning-line';
-	import RiInformationLine from 'remixicon-svelte/icons/information-line';
-	import RiCloseCircleLine from 'remixicon-svelte/icons/close-circle-line';
+	import SpinnerIcon from 'phosphor-svelte/lib/Spinner';
+	import CheckCircleIcon from 'phosphor-svelte/lib/CheckCircle';
+	import XCircleIcon from 'phosphor-svelte/lib/XCircle';
+	import InfoIcon from 'phosphor-svelte/lib/Info';
+	import WarningIcon from 'phosphor-svelte/lib/Warning';
 
 	let { ...restProps }: SonnerProps = $props();
 </script>
@@ -17,18 +17,18 @@
 	{...restProps}
 >
 	{#snippet loadingIcon()}
-		<RiLoaderLine class="size-4 animate-spin" />
+		<SpinnerIcon class="size-4 animate-spin" />
 	{/snippet}
 	{#snippet successIcon()}
-		<RiCheckboxCircleLine class="size-4" />
+		<CheckCircleIcon class="size-4" />
 	{/snippet}
 	{#snippet errorIcon()}
-		<RiErrorWarningLine class="size-4" />
+		<XCircleIcon class="size-4" />
 	{/snippet}
 	{#snippet infoIcon()}
-		<RiInformationLine class="size-4" />
+		<InfoIcon class="size-4" />
 	{/snippet}
 	{#snippet warningIcon()}
-		<RiCloseCircleLine class="size-4" />
+		<WarningIcon class="size-4" />
 	{/snippet}
 </Sonner>

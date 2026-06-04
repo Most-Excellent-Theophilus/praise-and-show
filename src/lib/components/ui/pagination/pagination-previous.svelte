@@ -2,7 +2,7 @@
 	import { Pagination as PaginationPrimitive } from "bits-ui";
 	import { cn } from "$lib/utils.js";
 	import { buttonVariants } from "$lib/components/ui/button/index.js";
-	import RiArrowLeftSLine from 'remixicon-svelte/icons/arrow-left-s-line';
+	import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeft';
 
 	let {
 		ref = $bindable(null),
@@ -21,6 +21,6 @@
 	)}
 	{...restProps}
 >
-	<RiArrowLeftSLine data-icon="inline-start" />
+	<CaretLeftIcon data-icon="inline-start" />
 	<span class="cn-pagination-previous-text hidden sm:block">Previous</span>
 </PaginationPrimitive.PrevButton>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Pagination as PaginationPrimitive } from "bits-ui";
-	import RiArrowLeftSLine from 'remixicon-svelte/icons/arrow-left-s-line';
+	import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeft';
 	import { cn } from "$lib/utils.js";
 	import { buttonVariants } from "../button/index.js";
 
@@ -13,7 +13,7 @@
 </script>
 
 {#snippet Fallback()}
-	<RiArrowLeftSLine class={cn("size-4", className)} />
+	<CaretLeftIcon class={cn("size-4", className)} />
 	<span>Previous</span>
 {/snippet}
 
