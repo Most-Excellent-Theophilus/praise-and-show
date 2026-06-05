@@ -15,6 +15,56 @@
 		"core:window:allow-start-dragging",
 		"dialog:allow-ask",
 		"dialog:allow-confirm",
-		"dialog:default"
+		"dialog:default",
+		"sql:allow-execute",
+		"sql:allow-select",
+		"sql:allow-load",
+		"fs:default",
+
+		"fs:allow-read-file",
+		"fs:allow-read-dir",
+
+		"fs:allow-write-file",
+		"fs:allow-write-text-file",
+		
+
+		"fs:allow-create",
+		"fs:allow-mkdir",
+
+		"fs:allow-remove",
+		
+
+		"fs:allow-copy-file",
+		"fs:allow-rename",
+
+		"fs:allow-exists",
+		"fs:allow-stat",
+
+		"fs:allow-open",
+		"fs:allow-seek",
+		"fs:allow-truncate",
+
+		"fs:allow-appcache-read",
+		"fs:allow-appcache-write",
+
+		"fs:allow-applocaldata-read",
+		"fs:allow-applocaldata-write",
+
+		"fs:allow-appconfig-read",
+		"fs:allow-appconfig-write",
+
+		"fs:allow-appdata-read",
+		"fs:allow-appdata-write",
+
+		"fs:allow-resource-read",
+
+		{
+			"identifier": "fs:allow-exists",
+			"allow": [
+				{
+					"path": "$APPDATA/*"
+				}
+			]
+		}
 	]
 }

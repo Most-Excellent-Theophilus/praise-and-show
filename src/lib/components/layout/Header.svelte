@@ -71,6 +71,15 @@
 				<Settings />
 				Settings
 			</Button>
+			<Button
+				onclick={() => toastedgoto('/reader')}
+				size="lg"
+				class="hover:cursor-pointer"
+				variant={page.url.pathname == '/reader' ? 'default' : 'link'}
+			>
+				<Settings />
+				Settings
+			</Button>
 		</ButtonGroup>
 	</div>
 
