@@ -134,3 +134,36 @@
 		@apply font-sans;
 	}
 }
+
+/* Modern scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(240 5% 65%) transparent;
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: hsl(240 5% 65% / 0.7);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 5% 50% / 0.9);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}

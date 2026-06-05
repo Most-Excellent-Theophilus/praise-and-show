@@ -68,6 +68,7 @@
 		"@tauri-apps/plugin-dialog": "^2.7.1",
 		"@tauri-apps/plugin-fs": "^2.5.1",
 		"@tauri-apps/plugin-sql": "^2.4.0",
+		"@tauri-apps/plugin-store": "^2.4.3",
 		"lucide-svelte": "^1.0.1",
 		"tauri-plugin-python-api": "^0.3.4"
 	}
