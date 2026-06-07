@@ -1,11 +1,13 @@
 <script lang="ts">
 	import { open } from '@tauri-apps/plugin-dialog';
 	import { bible, readerState } from '@/stores/bible.svelte';
-	import { Loader2 } from 'lucide-svelte';
+	import { Loader2, Search } from 'lucide-svelte';
 	import { toast } from 'svelte-sonner';
 	import type { BibleMeta, Book, SearchResult, Verse } from '@/stores/reader';
 	import type { ConvertResult } from '@/stores/converter';
 	import * as Resizable from '$lib/components/ui/resizable/index.js';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
 
 	import BibleLanding from './BibleLanding.svelte';
 	import BibleSidebar from './BibleSidebar.svelte';
@@ -13,6 +15,12 @@
 	import BibleSearch from './BibleSearch.svelte';
 	import BibleVersePane from './BibleVersePane.svelte';
 	import BibleFooter from './BibleFooter.svelte';
+	import VerseSelector from './VerseSelector.svelte';
+	import { Button } from '@/components/ui/button';
+	import * as Kbd from '$lib/components/ui/kbd/index.js';
+	import { onMount } from 'svelte';
+	import { session } from './session.svelte';
+	import { typeahead } from './typeahead.svelte';
 
 	const loading = $derived($readerState);
 
@@ -31,9 +39,16 @@
 	let searchQ = $state('');
 	let searchT = $state<'' | 'OT' | 'NT'>('');
 	let searchHits = $state<SearchResult[]>([]);
+	let verseSelectorOpen = $state(false);
 
 	let otBooks = $derived(books.filter((b) => b.testament === 'OT'));
 	let ntBooks = $derived(books.filter((b) => b.testament === 'NT'));
+
+	onMount(async () => {
+		await session.hydrate();
+		activeToken = session.state?.activeToken ?? '';
+		if (activeToken) await openBibleToken(activeToken);
+	});
 
 	async function loadLanding() {
 		try {
@@ -76,6 +91,7 @@
 			books = await bible.books(dbToken);
 			activeToken = dbToken;
 			activeBibleName = name;
+			await session.set({ activeToken });
 			availableBibles = await bible.list(activeToken);
 			if (books.length) await pickBook(books[0]);
 		} catch (e) {
@@ -133,12 +149,81 @@
 		await pickChapter(h.chapter);
 	}
 
+	// ── Typeahead: confirm book then fetch its chapters ──────────────────
+	async function confirmTypeaheadBook(match: Book) {
+		const chs = await bible.chapters(activeToken, match.id);
+		typeahead.confirmBook(match, chs);
+	}
+
 	function onKey(ev: KeyboardEvent) {
-		if (ev.key === 'f') {
+		// Ctrl+F → search
+		if (ev.key === 'f' && ev.ctrlKey) {
 			ev.preventDefault();
 			searchOpen = true;
+			return;
 		}
-		if (ev.key === 'Escape') searchOpen = false;
+
+		// Never steal keys from inputs or open dialogs
+		const tag = (ev.target as HTMLElement).tagName;
+		if (tag === 'INPUT' || tag === 'TEXTAREA' || searchOpen) return;
+		if (ev.ctrlKey || ev.altKey || ev.metaKey) return;
+
+		if (ev.key === 'Escape') {
+			if (verseSelectorOpen) {
+				verseSelectorOpen = false;
+				typeahead.reset();
+			}
+			return;
+		}
+
+		if (ev.key === 'Backspace') {
+			if (verseSelectorOpen) typeahead.backspace();
+			return;
+		}
+
+		if (ev.key === 'Enter' && verseSelectorOpen && typeahead.stage === 'book') {
+			// Force-confirm the first partial match
+			const lower = typeahead.buffer.toLowerCase();
+			const match = books.find((b) => b.short_name.trim().toLowerCase().startsWith(lower));
+			if (match) confirmTypeaheadBook(match);
+			return;
+		}
+
+		if (ev.key.length !== 1) return;
+
+		// ── Book stage ───────────────────────────────────────────────────────
+		if (typeahead.stage === 'book') {
+			const result = typeahead.pushBookKey(ev.key, books);
+			if (result === 'none') return;
+
+			verseSelectorOpen = true;
+
+			if (result === 'exact') {
+				const match = books.filter(
+					(b) => b.short_name.trim().toLowerCase() === typeahead.buffer.toLowerCase()
+				);
+				if (match.length == 1) confirmTypeaheadBook(match[0]);
+			}
+			return;
+		}
+
+		// ── Chapter stage ────────────────────────────────────────────────────
+		if (typeahead.stage === 'chapter') {
+			typeahead.pushChapterKey(ev.key);
+			return;
+		}
+
+		// ── Verse stage ──────────────────────────────────────────────────────
+		if (typeahead.stage === 'verse') {
+			typeahead.pushVerseKey(ev.key, async (v, book, chapter) => {
+				await pickBook(book);
+				await pickChapter(chapter);
+				await session.set({
+					activeVerse: { book: book.short_name, chapter, verse: v }
+				});
+				verseSelectorOpen = false;
+			});
+		}
 	}
 </script>
 
@@ -187,38 +272,39 @@
 			defaultSize={65}
 			maxSize={70}
 			minSize={60}
-			class="flex min-h-0 flex-1 flex-col overflow-hidden"
+			class="relative flex min-h-0 flex-1 flex-col overflow-hidden"
 		>
-			{#if searchOpen}
-				<BibleSearch
-					bind:searchQ
-					bind:searchT
-					{searchHits}
-					searching={loading.searching}
-					onSearch={doSearch}
-					onJumpTo={jumpTo}
-					onClose={() => {
-						searchOpen = false;
-						searchQ = '';
-						searchHits = [];
-					}}
-				/>
-			{/if}
-
 			<BibleVersePane
 				{activeBook}
 				{activeChapter}
+				activeVerse={session.state?.activeVerse.verse||1}
 				{verses}
 				{convertMeta}
 				loadingVerses={loading.loadingVerses}
 			/>
-
+			<Button
+				variant={searchOpen ? 'outline' : 'default'}
+				size="lg"
+				class=" absolute right-5 bottom-20  cursor-pointer rounded-3xl !shadow-2xl"
+				onclick={() => {
+					searchOpen = !searchOpen;
+					searchQ = '';
+					searchT = '';
+					searchHits = [];
+				}}
+			>
+				<Search class="size-6" />
+				<Kbd.Group>
+					<Kbd.Root>Ctrl + F</Kbd.Root>
+				</Kbd.Group>
+			</Button>
 			<BibleFooter
 				{activeBook}
 				{activeChapter}
 				{chapters}
 				onPrev={() => pickChapter(activeChapter - 1)}
 				onNext={() => pickChapter(activeChapter + 1)}
+				openVerse={() => (verseSelectorOpen = !verseSelectorOpen)}
 			/>
 		</Resizable.Pane>
 		<Resizable.Handle withHandle />
@@ -228,28 +314,37 @@
 			maxSize={20}
 			class="min-h-0 flex-1 overflow-y-auto "
 		>
-			<BibleHeader
-				{activeBook}
-				{activeChapter}
-				{chapters}
-				{searchOpen}
-				onPickChapter={pickChapter}
-				onToggleSearch={() => (searchOpen = !searchOpen)}
-			/>
+			<BibleHeader {activeBook} {activeChapter} {chapters} onPickChapter={pickChapter} />
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
 {/if}
 
-{#if loading.importing}
-	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
-	>
-		<div class="space-y-4 text-center">
-			<Loader2 class="mx-auto h-8 w-8 animate-spin" />
-			<div>
-				<p class="font-medium">{loading.progress?.stage}</p>
-				<p class="text-sm text-muted-foreground">{loading.progress?.percent ?? 0}%</p>
-			</div>
-		</div>
-	</div>
-{/if}
+<AlertDialog.Root bind:open={loading.importing}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>{loading.progress?.stage}</AlertDialog.Title>
+			<AlertDialog.Description>
+				{loading.progress?.percent ?? 0}%
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+	</AlertDialog.Content>
+</AlertDialog.Root>
+
+<Dialog.Root bind:open={searchOpen}>
+	<Dialog.Content style="width:700px;max-width:95vw;height:95vh;" class="flex flex-col">
+		<Dialog.Header>
+			<Dialog.Title>Search</Dialog.Title>
+		</Dialog.Header>
+
+		<BibleSearch
+			bind:searchQ
+			bind:searchT
+			{searchHits}
+			searching={loading.searching}
+			onSearch={doSearch}
+			onJumpTo={jumpTo}
+		/>
+	</Dialog.Content>
+</Dialog.Root>
+
+<VerseSelector bind:open={verseSelectorOpen} typer={typeahead} />

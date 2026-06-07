@@ -10,13 +10,15 @@
 		activeChapter,
 		verses,
 		convertMeta,
-		loadingVerses
+		loadingVerses,
+		activeVerse = $bindable()
 	}: {
 		activeBook: Book | null;
 		activeChapter: number;
 		verses: Verse[];
 		convertMeta: ConvertResult | null;
 		loadingVerses: boolean;
+		activeVerse: number;
 	} = $props();
 </script>
 
@@ -33,7 +35,7 @@
 		{/if}
 
 		<div class="space-y-1">
-			<p class="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+			<p class="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
 				{activeBook?.name}
 			</p>
 			<h1 class="text-2xl font-bold">Chapter {activeChapter}</h1>
@@ -48,8 +50,9 @@
 		{:else}
 			<div class="space-y-3 text-base leading-relaxed">
 				{#each verses as v (v.id)}
-					<p>
-						<sup class="mr-1 select-none text-[10px] font-bold text-muted-foreground">{v.verse}</sup>{v.text}
+					<p class={` p-2 ${activeVerse === v.verse ? 'bg-emerald-300 dark:bg-primary' : ''}`}>
+						<sup class="mr-1 text-[10px] font-bold text-muted-foreground select-none">{v.verse}</sup
+						>{v.text}
 					</p>
 				{/each}
 			</div>

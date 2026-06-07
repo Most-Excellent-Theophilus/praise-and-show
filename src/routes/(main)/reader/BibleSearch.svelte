@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { X } from 'lucide-svelte';
+
 	import type { SearchResult } from '@/stores/reader';
 
 	let {
@@ -12,8 +12,7 @@
 		searchHits,
 		searching,
 		onSearch,
-		onJumpTo,
-		onClose
+		onJumpTo
 	}: {
 		searchQ: string;
 		searchT: '' | 'OT' | 'NT';
@@ -21,7 +20,6 @@
 		searching: boolean;
 		onSearch: () => void;
 		onJumpTo: (hit: SearchResult) => void;
-		onClose: () => void;
 	} = $props();
 
 	let searchTimer: ReturnType<typeof setTimeout>;
@@ -32,10 +30,10 @@
 	}
 </script>
 
-<div class="shrink-0 space-y-2 border-b bg-card px-3 py-2">
+<div class="flex-1 shrink-0 space-y-2 border-b bg-card px-3 py-2">
 	<div class="flex items-center gap-2">
 		<Input
-			class="h-8 flex-1 text-sm"
+			class="h-10 flex-1 text-sm"
 			placeholder="Search all verses…"
 			bind:value={searchQ}
 			oninput={onType}
@@ -47,13 +45,13 @@
 					variant={searchT === v ? 'default' : 'outline'}
 					size="sm"
 					class="h-8 px-2.5 text-xs"
-					onclick={() => { searchT = v as '' | 'OT' | 'NT'; onSearch(); }}
-				>{l}</Button>
+					onclick={() => {
+						searchT = v as '' | 'OT' | 'NT';
+						onSearch();
+					}}>{l}</Button
+				>
 			{/each}
 		</div>
-		<Button variant="ghost" size="icon" class="h-8 w-8 text-muted-foreground" onclick={onClose}>
-			<X class="h-4 w-4" />
-		</Button>
 	</div>
 
 	{#if searching}
@@ -61,7 +59,7 @@
 			{#each [0, 1, 2] as i (i)}<Skeleton class="h-8 w-full" />{/each}
 		</div>
 	{:else if searchHits.length}
-		<div class="max-h-56 space-y-px overflow-y-auto">
+		<div class="max-h-96 space-y-px overflow-y-auto">
 			{#each searchHits as h (`${h.book_id}-${h.chapter}-${h.verse}`)}
 				<button
 					class="flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-left text-sm
@@ -69,9 +67,10 @@
 					onclick={() => onJumpTo(h)}
 				>
 					<Badge variant="outline" class="mt-0.5 shrink-0 font-mono text-[10px]">
-						{h.short_name} {h.chapter}:{h.verse}
+						{h.short_name}
+						{h.chapter}:{h.verse}
 					</Badge>
-					<span class="line-clamp-2 text-xs text-muted-foreground">{h.text}</span>
+					<span class="line-clamp-2 text-muted-foreground">{h.text}</span>
 				</button>
 			{/each}
 		</div>
@@ -80,5 +79,7 @@
 		</p>
 	{:else if searchQ}
 		<p class="text-[11px] text-muted-foreground">No results found.</p>
+	{:else if searchQ == ''}
+		<p class=" text-sm text-green-500">Start typing in the Search Box.</p>
 	{/if}
 </div>
